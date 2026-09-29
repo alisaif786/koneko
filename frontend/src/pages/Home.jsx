@@ -1,49 +1,238 @@
-import { useEffect, useState } from "react";
-import { konekoHome, waterCat, foodCat, medicineCat, sleepCat, calendarCat } from "../assets";
+import { useCallback, useEffect, useState } from "react";
+import { konekoHome, waterCat, foodCat, medicineCat, sleepCat } from "../assets";
+import careCycle from "../assets/cats/care-cycle.png";
 import phaseData from "../constants/phaseData";
-import { getCycleStatus } from "../services/cycleService";
+import { getCycleSettings, getCycleStatus } from "../services/cycleService";
+import { getAverage, getHistory, getPrediction, startPeriod } from "../services/historyService";
 import { getHomeReminders } from "../services/reminderService";
 import QuickCareCard from "../components/home/QuickCareCard";
 import Reminder from "../components/reminder/Reminder";
 
+function formatLocalDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+function normalizeDate(value) {
+    if (!value) return null;
+
+    const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!match) return null;
+
+    const [, year, month, day] = match;
+    const date = new Date(Number(year), Number(month) - 1, Number(day));
+    if (
+        date.getFullYear() !== Number(year) ||
+        date.getMonth() !== Number(month) - 1 ||
+        date.getDate() !== Number(day)
+    ) {
+        return null;
+    }
+
+    return `${year}-${month}-${day}`;
+}
+
+function getPredictionDate(data) {
+    if (typeof data === "string") return normalizeDate(data);
+
+    const sources = [
+        data,
+        data?.prediction,
+        data?.nextPeriod,
+        data?.expectedPeriod,
+        data?.result,
+    ];
+    const dateKeys = [
+        "predictedPeriodStartDate",
+        "nextExpectedPeriodStartDate",
+        "predictedStartDate",
+        "nextPeriodStartDate",
+        "nextPeriodDate",
+        "expectedPeriodStartDate",
+        "expectedDate",
+        "predictedDate",
+        "periodStartDate",
+        "date",
+    ];
+
+    for (const source of sources) {
+        if (typeof source === "string") {
+            const parsedDate = normalizeDate(source);
+            if (parsedDate) return parsedDate;
+        }
+
+        for (const key of dateKeys) {
+            const parsedDate = normalizeDate(source?.[key]);
+            if (parsedDate) return parsedDate;
+        }
+    }
+
+    return null;
+}
+
+function getAverageCycleLength(data) {
+    const sources = [data, data?.result];
+    const lengthKeys = [
+        "averageCycleLength",
+        "averageCycleLengthDays",
+        "averageCycle",
+        "averageLength",
+        "average",
+        "cycleLength",
+    ];
+
+    for (const source of sources) {
+        const value = typeof source === "number" || typeof source === "string"
+            ? Number(source)
+            : lengthKeys
+                .map((key) => Number(source?.[key]))
+                .find((length) => Number.isFinite(length) && length > 0);
+
+        if (Number.isFinite(value) && value > 0) return Math.round(value);
+    }
+
+    return null;
+}
+
+function formatPredictionDate(value) {
+    const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) return "";
+
+    const [, year, month, day] = match;
+    const date = new Date(Number(year), Number(month) - 1, Number(day));
+    return new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "long",
+    }).format(date);
+}
+
 export default function Home({ onNavigate, onReminder }) {
     const [cycle, setCycle] = useState(null);
+    const [cycleProfile, setCycleProfile] = useState(null);
+    const [cycleProfileLoaded, setCycleProfileLoaded] = useState(false);
     const [reminders, setReminders] = useState([]);
+    const [predictionDate, setPredictionDate] = useState(null);
+    const [averageCycleLength, setAverageCycleLength] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [showStartPeriodDialog, setShowStartPeriodDialog] = useState(false);
+    const [startingPeriod, setStartingPeriod] = useState(false);
+    const [startPeriodError, setStartPeriodError] = useState("");
+    const [startPeriodSuccess, setStartPeriodSuccess] = useState("");
+
+    const loadHomeData = useCallback(async ({ initial = false, includeHistory = false } = {}) => {
+        const token = localStorage.getItem("koneko_token");
+        const requestOptions = {
+            cache: "no-store",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        const readJson = async (request) => {
+            const response = await request;
+            if (!response.ok) throw new Error(`API Error: ${response.status}`);
+            return response.json();
+        };
+
+        const cycleRequest = readJson(getCycleStatus(requestOptions))
+            .then(setCycle)
+            .catch((error) => console.error("Home cycle error:", error));
+
+        const remindersRequest = readJson(getHomeReminders(requestOptions))
+            .then(setReminders)
+            .catch((error) => console.error("Home reminders error:", error));
+
+        const settingsRequest = getCycleSettings(requestOptions)
+            .then(async (response) => {
+                if (response.status === 404) return null;
+                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                return response.json();
+            })
+            .then(setCycleProfile)
+            .catch((error) => {
+                console.error("Home cycle settings error:", error);
+                setCycleProfile(null);
+            })
+            .finally(() => setCycleProfileLoaded(true));
+
+        const predictionRequest = readJson(getPrediction(requestOptions))
+            .then((data) => setPredictionDate(getPredictionDate(data)))
+            .catch((error) => {
+                console.error("Home prediction error:", error);
+                setPredictionDate(null);
+            });
+
+        const averageRequest = readJson(getAverage(requestOptions))
+            .then((data) => setAverageCycleLength(getAverageCycleLength(data)))
+            .catch((error) => {
+                console.error("Home cycle average error:", error);
+                setAverageCycleLength(null);
+            });
+
+        const historyRequest = includeHistory
+            ? getHistory(requestOptions)
+                .then((response) => {
+                    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                    return response.json();
+                })
+                .catch((error) => console.error("Home cycle history refresh error:", error))
+            : Promise.resolve();
+
+        const coreRequests = Promise.allSettled([cycleRequest, remindersRequest]);
+        const supplementaryRequests = Promise.allSettled([
+            settingsRequest,
+            predictionRequest,
+            averageRequest,
+            historyRequest,
+        ]);
+
+        if (initial) {
+            await coreRequests;
+            setLoading(false);
+            await supplementaryRequests;
+        } else {
+            await Promise.all([coreRequests, supplementaryRequests]);
+        }
+    }, []);
 
     useEffect(() => {
-        const token = localStorage.getItem("koneko_token");
+        loadHomeData({ initial: true });
+    }, [loadHomeData]);
 
-        Promise.all([
-            getCycleStatus({
+    async function handleStartPeriod() {
+        setStartingPeriod(true);
+        setStartPeriodError("");
+
+        try {
+            const token = localStorage.getItem("koneko_token");
+            const response = await startPeriod({
+                method: "POST",
                 headers: {
+                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-            }).then((res) => {
-                if (!res.ok) throw new Error("Failed to load cycle");
-                return res.json();
-            }),
-
-            getHomeReminders({
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }).then((res) => {
-                if (!res.ok) throw new Error("Failed to load reminders");
-                return res.json();
-            }),
-        ])
-            .then(([cycleData, reminderData]) => {
-                setCycle(cycleData);
-                setReminders(reminderData);
-            })
-            .catch((error) => {
-                console.error("Home API Error:", error);
-            })
-            .finally(() => {
-                setLoading(false);
+                body: JSON.stringify({
+                    periodStartDate: formatLocalDate(new Date()),
+                }),
             });
-    }, []);
+
+            if (!response.ok) {
+                const message = await response.text();
+                throw new Error(message || `API Error: ${response.status}`);
+            }
+
+            setShowStartPeriodDialog(false);
+            setStartPeriodSuccess("Lisa's new cycle has been logged ♡");
+            await loadHomeData({ includeHistory: true });
+        } catch (error) {
+            console.error("Start period error:", error);
+            setStartPeriodError("Couldn't log the new cycle. Please try again ♡");
+        } finally {
+            setStartingPeriod(false);
+        }
+    }
 
     if (loading) {
         return (
@@ -65,6 +254,11 @@ export default function Home({ onNavigate, onReminder }) {
     const phase = cycle?.phase || "LUTEAL";
 
     const currentPhase = phaseData[phase];
+    const today = formatLocalDate(new Date());
+    const currentPeriodStartDate = normalizeDate(
+        cycleProfile?.lastPeriodStartDate || cycleProfile?.periodStartDate
+    );
+    const shouldOfferPeriodStart = cycleProfileLoaded && currentPeriodStartDate !== today;
 
     const visibleReminders = reminders
         .filter((reminder) => reminder.enabled)
@@ -80,11 +274,11 @@ export default function Home({ onNavigate, onReminder }) {
             {/* MAIN IMAGE */}
 
             <section className="home-hero">
-                <img src={konekoHome} alt="Koneko" />
+                <span>MY LITTLE CAT</span>
+                <img className="home-hero-banner" src={konekoHome} alt="Koneko" />
 
                 <div className="home-hero-content">
-                    <span>YOUR LITTLE CAT</span>
-                    <h2>I'm here for you ♡</h2>
+                    <h2>Made with love, just for you ♡</h2>
                     <p>
                         {phase === "MENSTRUAL"
                             ? "Blanket, snacks and rest. That's the plan. 🐱"
@@ -117,6 +311,50 @@ export default function Home({ onNavigate, onReminder }) {
 
                 <span className="arrow">›</span>
             </button>
+
+            {predictionDate && (
+                <section className="home-prediction-card" aria-label="Next cycle prediction">
+                    <div className="home-prediction-heading">
+                        <span aria-hidden="true">🌸</span>
+                        <h2>Next Prediction</h2>
+                    </div>
+
+                    <div className="home-prediction-values">
+                        <div className="home-prediction-value">
+                            <span>Expected</span>
+                            <strong>{formatPredictionDate(predictionDate)}</strong>
+                        </div>
+                        <div className="home-prediction-value">
+                            <span>Average Cycle</span>
+                            <strong>
+                                {averageCycleLength
+                                    ? `${averageCycleLength} days`
+                                    : "Not enough data"}
+                            </strong>
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {shouldOfferPeriodStart && (
+                <button
+                    type="button"
+                    className="home-period-start-button"
+                    onClick={() => {
+                        setStartPeriodError("");
+                        setStartPeriodSuccess("");
+                        setShowStartPeriodDialog(true);
+                    }}
+                >
+                    🌸 My Period Started Today
+                </button>
+            )}
+
+            {startPeriodSuccess && (
+                <p className="home-period-start-success" role="status">
+                    {startPeriodSuccess}
+                </p>
+            )}
 
             {/* LITTLE NOTE */}
 
@@ -209,16 +447,63 @@ export default function Home({ onNavigate, onReminder }) {
                 className="calendar-shortcut"
                 onClick={() => onNavigate("cycle")}
             >
-                <img src={calendarCat} alt="Calendar" />
-
                 <div>
                     <span>YOUR CYCLE</span>
                     <h3>Open your calendar 🌸</h3>
                     <p>See where you are in your cycle</p>
                 </div>
 
+                <img src={careCycle} alt="Your Cycle calendar" />
+
                 <span className="arrow">›</span>
             </button>
+
+            {showStartPeriodDialog && (
+                <div
+                    className="home-period-start-overlay"
+                    role="presentation"
+                    onClick={() => {
+                        if (!startingPeriod) setShowStartPeriodDialog(false);
+                    }}
+                >
+                    <section
+                        className="home-period-start-dialog"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="home-period-start-title"
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <span className="home-period-start-icon" aria-hidden="true">🌸</span>
+                        <h2 id="home-period-start-title">Start a new cycle today?</h2>
+                        <p>Lisa will gently keep track of today's start for you.</p>
+
+                        {startPeriodError && (
+                            <p className="home-period-start-error" role="alert">
+                                😿 {startPeriodError}
+                            </p>
+                        )}
+
+                        <div className="home-period-start-actions">
+                            <button
+                                type="button"
+                                className="home-period-cancel"
+                                disabled={startingPeriod}
+                                onClick={() => setShowStartPeriodDialog(false)}
+                            >
+                                Not now
+                            </button>
+                            <button
+                                type="button"
+                                className="home-period-confirm"
+                                disabled={startingPeriod}
+                                onClick={handleStartPeriod}
+                            >
+                                {startingPeriod ? "Saving... 🐾" : "Yes, start today ♡"}
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            )}
         </div>
     );
 }

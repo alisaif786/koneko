@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { konekoHome } from "../assets";
+import heyCat from "../assets/cats/hey.png";
 import { loginUser } from "../services/authService";
 
-export default function Login({ onLogin }) {
+export default function Login({ onLogin, onRegister, notice, onClearNotice }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -11,6 +11,7 @@ export default function Login({ onLogin }) {
     const handleLogin = async (e) => {
         e.preventDefault();
 
+        onClearNotice?.();
         setError("");
         setLoading(true);
 
@@ -47,7 +48,7 @@ export default function Login({ onLogin }) {
     return (
         <div className="login-page">
             <div className="login-image">
-                <img src={konekoHome} alt="Koneko" />
+                <img src={heyCat} alt="Koneko" />
             </div>
 
             <h1>
@@ -64,6 +65,12 @@ export default function Login({ onLogin }) {
                 <p className="login-hint">
                     Your tiny cat has been waiting for you.
                 </p>
+
+                {notice && (
+                    <p className="login-success" role="status">
+                        {notice}
+                    </p>
+                )}
 
                 <input
                     type="text"
@@ -86,6 +93,12 @@ export default function Login({ onLogin }) {
                 <button type="submit" disabled={loading}>
                     {loading ? "Entering... 🐾" : "Enter Koneko ♡"}
                 </button>
+                <p className="auth-switch">
+                    New to Koneko?{" "}
+                    <button type="button" onClick={onRegister}>
+                        Create account
+                    </button>
+                </p>
             </form>
         </div>
     );

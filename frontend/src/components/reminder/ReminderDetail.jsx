@@ -9,6 +9,8 @@ export default function ReminderDetail({
                             onDelete,
                             onToggle,
                             onAdd,
+                            errorMessage,
+                            successMessage,
                         }) {
     const data = {
         WATER: {
@@ -62,7 +64,6 @@ export default function ReminderDetail({
     const matchingReminders =
         reminders.filter(
             (reminder) =>
-                reminder.enabled &&
                 reminder.type === type
         );
 
@@ -90,6 +91,18 @@ export default function ReminderDetail({
 
 
             <div className="detail-content">
+
+                {errorMessage && (
+                    <div className="reminder-error" role="alert">
+                        😿 {errorMessage}
+                    </div>
+                )}
+
+                {successMessage && (
+                    <div className="reminder-success" role="status">
+                        {successMessage}
+                    </div>
+                )}
 
                 {/* =================================================
                     HERO
@@ -139,7 +152,7 @@ export default function ReminderDetail({
 
                     <div>
                         <span>
-                            ACTIVE
+                            {matchingReminders.filter((reminder) => reminder.enabled).length} ACTIVE
                         </span>
 
                         <h2>

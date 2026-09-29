@@ -61,22 +61,25 @@ export default function CycleSettings({ onSaved }) {
         setError("");
         setSuccess("");
 
+        const cycle = Number(cycleLength);
+        const period = Number(periodLength);
+
         if (!lastPeriodStartDate) {
             setError("Please select your last period start date.");
             return;
         }
 
-        if (cycleLength < 21 || cycleLength > 45) {
+        if (Number.isNaN(cycle) || cycle < 21 || cycle > 45) {
             setError("Cycle length should be between 21 and 45 days.");
             return;
         }
 
-        if (periodLength < 1 || periodLength > 10) {
+        if (Number.isNaN(period) || period < 1 || period > 10) {
             setError("Period length should be between 1 and 10 days.");
             return;
         }
 
-        if (periodLength >= cycleLength) {
+        if (period >= cycle) {
             setError("Period length must be shorter than cycle length.");
             return;
         }
@@ -87,23 +90,21 @@ export default function CycleSettings({ onSaved }) {
             const token = localStorage.getItem("koneko_token");
 
             const response = await saveCycleSettings({
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                        lastPeriodStartDate,
-                        cycleLength: Number(cycleLength),
-                        periodLength: Number(periodLength),
-                    }),
-                });
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    lastPeriodStartDate,
+                    cycleLength: cycle,
+                    periodLength: period,
+                }),
+            });
 
             if (!response.ok) {
                 const message = await response.text();
-                throw new Error(
-                    message || `API Error: ${response.status}`
-                );
+                throw new Error(message || `API Error: ${response.status}`);
             }
 
             await response.json();
@@ -184,7 +185,7 @@ export default function CycleSettings({ onSaved }) {
                                 value={cycleLength}
                                 onChange={(e) =>
                                     setCycleLength(
-                                        e.target.value
+                                        Number(e.target.value)
                                     )
                                 }
                                 required
@@ -207,7 +208,7 @@ export default function CycleSettings({ onSaved }) {
                                 value={periodLength}
                                 onChange={(e) =>
                                     setPeriodLength(
-                                        e.target.value
+                                        Number(e.target.value)
                                     )
                                 }
                                 required

@@ -1,90 +1,66 @@
-import { formatReminderTime, formatFrequency } from "../../utils/reminderUtils";
+import {
+    formatReminderTime,
+    formatFrequency,
+    formatReminderType,
+} from "../../utils/reminderUtils";
 
 export default function Reminder({
-                      reminder,
-                      compact = false,
-                      onEdit,
-                      onDelete,
-                      onToggle,
-                  }) {
+    reminder,
+    compact = false,
+    onEdit,
+    onDelete,
+    onToggle,
+}) {
     const iconMap = {
         WATER: "💧",
         MEDICINE: "💊",
         FOOD: "🍓",
         SLEEP: "🌙",
-        CUSTOM: "🐾",
     };
-
-    const icon =
-        iconMap[reminder.type] ||
-        "🔔";
+    const icon = iconMap[reminder.type] || "🔔";
 
     return (
         <div
-            className={`reminder-card ${
-                compact
-                    ? "compact"
-                    : ""
-            } ${
-                !reminder.enabled
-                    ? "reminder-disabled"
-                    : ""
+            className={`reminder-card ${compact ? "compact" : ""} ${
+                reminder.enabled ? "" : "reminder-disabled"
             }`}
         >
-
-            {/* ICON */}
-
-            <div className="reminder-icon">
-                {icon}
-            </div>
-
-
-            {/* MAIN */}
+            <div className="reminder-icon">{icon}</div>
 
             <div className="reminder-main">
-
-                <h4>
-                    {reminder.title}
-                </h4>
-
+                <div className="reminder-title-row">
+                    <h4>{reminder.title}</h4>
+                    <span
+                        className={`reminder-status-badge ${
+                            reminder.enabled ? "enabled" : "disabled"
+                        }`}
+                    >
+                        {reminder.enabled ? "Enabled" : "Disabled"}
+                    </span>
+                </div>
                 <p>
-                    {formatReminderTime(
-                        reminder.time
-                    )}
+                    {formatReminderType(reminder.type)}
                     {" · "}
-                    {formatFrequency(
-                        reminder
-                    )}
+                    {formatReminderTime(reminder.time)}
+                    {" · "}
+                    {formatFrequency(reminder)}
                 </p>
-
             </div>
 
-
-            {/* ACTIONS */}
-
             <div className="reminder-actions">
-
-                {/* TOGGLE */}
-
                 <button
                     type="button"
                     className={`reminder-toggle ${
-                        reminder.enabled
-                            ? "active"
-                            : ""
+                        reminder.enabled ? "active" : ""
                     }`}
                     onClick={onToggle}
                     aria-label={
-                        reminder.enabled
-                            ? "Disable reminder"
-                            : "Enable reminder"
+                        reminder.enabled ? "Disable reminder" : "Enable reminder"
                     }
+                    aria-pressed={reminder.enabled}
                 >
                     <span />
                 </button>
-
-
-                {/* EDIT */}
 
                 <button
                     type="button"
@@ -95,9 +71,6 @@ export default function Reminder({
                     ✎
                 </button>
 
-
-                {/* DELETE */}
-
                 <button
                     type="button"
                     className="reminder-delete-button"
@@ -106,14 +79,7 @@ export default function Reminder({
                 >
                     🗑
                 </button>
-
             </div>
-
         </div>
     );
 }
-
-
-// ============================================================
-// REMINDER FORM
-// ============================================================

@@ -1,0 +1,112 @@
+.us-hero {
+  padding: 20px;
+  border-radius: 27px;
+  background: linear-gradient(
+          145deg,
+          #ffeaf3,
+          #eee8ff
+  );
+  text-align: center;
+}
+
+.us-hero img {
+  width: 145px;
+  height: 145px;
+  object-fit: cover;
+  border-radius: 28px;
+}
+
+.us-hero h2 {
+  margin: 7px 0 4px;
+  font-family: "Quicksand", sans-serif;
+  font-size: 22px;
+}
+
+.us-hero p {
+  margin: 0;
+  color: #806d7c;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.letter-list {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.letter-card {
+  width: 100%;
+  padding: 18px;
+  border: 1px solid #f0e4ec;
+  border-radius: 23px;
+  background: #fff;
+  box-shadow: var(--shadow);
+  text-align: left;
+  color: var(--text);
+}
+
+.letter-card.opened {
+  background: #fff7fa;
+}
+
+.letter-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.letter-icon {
+  font-size: 27px;
+}
+
+.letter-arrow {
+  color: #b5839e;
+  font-size: 21px;
+}
+
+.letter-card h3 {
+  margin: 5px 0 4px;
+  font-family: "Quicksand", sans-serif;
+  font-size: 17px;
+}
+
+.letter-card > p {
+  margin: 0;
+  color: #978697;
+  font-size: 11px;
+}
+
+.letter-message {
+  margin-top: 14px;
+  padding: 13px;
+  border-radius: 15px;
+  background: #fff;
+  color: #765e6f;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.us-bottom {
+  margin-top: 15px;
+  padding: 13px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 20px;
+  background: #f1ebff;
+}
+
+.us-bottom img {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.us-bottom p {
+  margin: 0;
+  color: #806f82;
+  font-size: 11px;
+}

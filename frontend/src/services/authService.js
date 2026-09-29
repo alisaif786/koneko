@@ -1,3 +1,9 @@
+import { apiUrl } from "./apiConfig";
+
 export function loginUser(options) {
-    return fetch("http://localhost:8080/api/users/login", options);
+    return fetch(apiUrl("/api/users/login"), options);
+}
+
+export function registerUser(options) {
+    return fetch(apiUrl("/api/users/register"), options);
 }

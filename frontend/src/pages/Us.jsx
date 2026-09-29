@@ -1,9 +1,48 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { chatCat } from "../assets";
+import usCat from "../assets/cats/us.jpg";
 import Screen from "../components/common/Screen";
+import usMessages from "../data/usMessages";
+
+const millisecondsPerDay = 24 * 60 * 60 * 1000;
+
+function getLocalDayNumber(date) {
+    return Math.floor(
+        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) /
+            millisecondsPerDay
+    );
+}
+
+function getTwoDayBucket(date = new Date()) {
+    return Math.floor(getLocalDayNumber(date) / 2);
+}
+
+function getBucketMessage(messages, bucket, offset) {
+    if (!messages.length) return "";
+
+    return messages[(bucket + offset) % messages.length];
+}
 
 export default function Us() {
     const [openLetter, setOpenLetter] = useState(null);
+    const [messageBucket, setMessageBucket] = useState(getTwoDayBucket);
+
+    useEffect(() => {
+        const now = new Date();
+        const dayNumber = getLocalDayNumber(now);
+        const nextBucketDayNumber = (Math.floor(dayNumber / 2) + 1) * 2;
+        const daysUntilBoundary = nextBucketDayNumber - dayNumber;
+        const nextBoundary = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() + daysUntilBoundary
+        );
+        const timeoutId = window.setTimeout(() => {
+            setMessageBucket(getTwoDayBucket());
+        }, Math.max(0, nextBoundary.getTime() - Date.now()));
+
+        return () => window.clearTimeout(timeoutId);
+    }, [messageBucket]);
 
     const letters = [
         {
@@ -12,8 +51,7 @@ export default function Us() {
             label: "OPEN WHEN",
             title: "You miss me",
             text: "A tiny letter is waiting for you...",
-            message:
-                "If you're reading this because you miss me, then come here. Consider this your little virtual hug. 🤍",
+            message: getBucketMessage(usMessages.miss, messageBucket, 0),
         },
         {
             id: "sleep",
@@ -21,8 +59,7 @@ export default function Us() {
             label: "OPEN WHEN",
             title: "You can't sleep",
             text: "Maybe there's something sweet inside.",
-            message:
-                "Close your eyes, get comfortable, and imagine me telling you goodnight. Sleep softly, baby. 🌙♡",
+            message: getBucketMessage(usMessages.sleep, messageBucket, 1),
         },
         {
             id: "random",
@@ -30,15 +67,14 @@ export default function Us() {
             label: "RANDOM",
             title: "A message from me",
             text: "Because you deserve random love too. ♡",
-            message:
-                "This is your completely random reminder that someone is thinking about you. 🐱💕",
+            message: getBucketMessage(usMessages.random, messageBucket, 2),
         },
     ];
 
     return (
         <Screen title="Just Us 💌">
             <section className="us-hero">
-                <img src={chatCat} alt="Koneko love" />
+                <img src={usCat} alt="Koneko love" />
 
                 <span>OUR LITTLE CORNER</span>
 

@@ -1,24 +1,59 @@
-import { useState } from "react";
-import "./App.css";
+import { useEffect, useState } from "react";
+import "./styles/app.css";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Cycle from "./pages/Cycle";
 import Reminders from "./pages/Reminders";
 import Profile from "./pages/Profile";
 import Us from "./pages/Us";
 import CycleSettings from "./pages/CycleSettings";
+import CycleHistory from "./pages/CycleHistory";
 import NavItem from "./components/common/NavItem";
+import { registerNotifications } from "./services/notificationService";
 
 export default function App() {
     const [activeTab, setActiveTab] = useState("home");
     const [isLoggedIn, setIsLoggedIn] = useState(
         !!localStorage.getItem("koneko_token")
     );
+    const [authView, setAuthView] = useState("login");
+    const [authNotice, setAuthNotice] = useState("");
     const [reminderSection, setReminderSection] = useState(null);
     const [profileSection, setProfileSection] = useState(null);
+    useEffect(() => {
+        if (isLoggedIn) {
+            void registerNotifications();
+        }
+    }, [isLoggedIn]);
 
     if (!isLoggedIn) {
-        return <Login onLogin={() => setIsLoggedIn(true)} />;
+        if (authView === "register") {
+            return (
+                <Register
+                    onBack={() => {
+                        setAuthNotice("");
+                        setAuthView("login");
+                    }}
+                    onRegistered={() => {
+                        setAuthNotice("Account created, please log in");
+                        setAuthView("login");
+                    }}
+                />
+            );
+        }
+
+        return (
+            <Login
+                onLogin={() => setIsLoggedIn(true)}
+                onRegister={() => {
+                    setAuthNotice("");
+                    setAuthView("register");
+                }}
+                notice={authNotice}
+                onClearNotice={() => setAuthNotice("")}
+            />
+        );
     }
 
     const handleTabChange = (tab) => {
@@ -64,9 +99,18 @@ export default function App() {
                 );
             }
 
+            if (profileSection === "cycle-history") {
+                return (
+                    <CycleHistory
+                        onBack={() => setProfileSection(null)}
+                    />
+                );
+            }
+
             return (
                 <Profile
                     onCycleSettings={() => setProfileSection("cycle-settings")}
+                    onCycleHistory={() => setProfileSection("cycle-history")}
                     onLogout={() => {
                         localStorage.removeItem("koneko_token");
                         localStorage.removeItem("koneko_user");

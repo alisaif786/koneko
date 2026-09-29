@@ -1,0 +1,249 @@
+:root {
+  font-family: "DM Sans", sans-serif;
+  color: #4b4050;
+  background: #fdf6fa;
+
+  --text: #493c48;
+  --muted: #9a8797;
+  --soft: #b49aaa;
+
+  --pink: #e9a9c4;
+  --pink-dark: #c9769b;
+  --pink-light: #ffe7f0;
+
+  --purple-light: #f1eaff;
+
+  --card: rgba(255, 255, 255, 0.92);
+  --border: #f1e3ec;
+
+  --shadow: 0 12px 30px rgba(110, 76, 105, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: #fdf6fa;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+          radial-gradient(
+                  circle at 10% 5%,
+                  #ffe4ee 0,
+                  transparent 28%
+          ),
+          radial-gradient(
+                  circle at 90% 18%,
+                  #eee5ff 0,
+                  transparent 30%
+          ),
+          #fdf6fa;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #e5aac5;
+  outline-offset: 2px;
+}
+
+img {
+  max-width: 100%;
+}
+
+.section-heading > div > span,
+.care-intro > div > span,
+.us-hero > span,
+.profile-hero > span,
+.cycle-hero > span,
+.phase-home-info > span,
+.calendar-title > div > span,
+.detail-hero > span {
+  display: block;
+  color: #aa8e9f;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.arrow {
+  flex-shrink: 0;
+  color: #b47c99;
+  font-size: 27px;
+  line-height: 1;
+}
+
+.small-arrow {
+  flex-shrink: 0;
+  color: #bd87a1;
+  font-size: 22px;
+}
+
+.phase-home-card:active,
+.quick-care-card:active,
+.calendar-shortcut:active,
+.reminder-card:active,
+.care-category:active {
+  transform: scale(0.985);
+}
+
+.section-heading {
+  margin: 0 18px 11px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.section-heading h2 {
+  margin: 3px 0 0;
+  color: var(--text);
+  font-family: "Quicksand", sans-serif;
+  font-size: 18px;
+}
+
+.section-heading button {
+  padding: 3px 0;
+  border: none;
+  background: transparent;
+  color: var(--pink-dark);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.phase-message-card h3 {
+  margin: 6px 0;
+  font-family: "Quicksand", sans-serif;
+  font-size: 16px;
+}
+
+.note-title {
+  margin: 0 0 3px;
+  font-family: "Quicksand", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.note-text {
+  margin: 0;
+  color: #817387;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.info-card {
+  padding: 19px;
+  border-radius: 23px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.info-card h3 {
+  margin: 5px 0 7px;
+  font-family: "Quicksand", sans-serif;
+}
+
+.info-card p {
+  margin: 0;
+  color: #897888;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.error-card > span {
+  font-size: 28px;
+}
+
+.empty-card {
+  padding: 24px 18px;
+  border-radius: 21px;
+  background: #fff;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.empty-card > span {
+  font-size: 29px;
+}
+
+.empty-card h3 {
+  margin: 6px 0 4px;
+  font-family: "Quicksand", sans-serif;
+  font-size: 16px;
+}
+
+.empty-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.reminder-toggle {
+  width: 42px;
+  height: 24px;
+
+  border-radius: 20px;
+
+  padding: 3px;
+
+  background: #ddd;
+
+  display: flex;
+  align-items: center;
+
+  cursor: pointer;
+}
+
+.reminder-toggle span {
+  width: 18px;
+  height: 18px;
+
+  display: block;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: white;
+}
+
+.reminder-toggle.active {
+  background: #d99aaa;
+  justify-content: flex-end;
+}
+
+@media (max-width: 420px) {
+
+  .reminder-toggle {
+    width: 38px;
+    height: 22px;
+  }
+
+}
+
+.mini-label {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #b18490;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}

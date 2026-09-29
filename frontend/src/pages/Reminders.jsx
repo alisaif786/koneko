@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { careCat, waterCat, foodCat, medicineCat, sleepCat } from "../assets";
+import monitoringCat from "../assets/cats/monitoring.png";
 import { getReminders, deleteReminder, updateReminder } from "../services/reminderService";
 import Screen from "../components/common/Screen";
 import CareCategory from "../components/reminder/CareCategory";
@@ -15,6 +16,7 @@ export default function Reminders({
     const [reminders, setReminders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
     const [showForm, setShowForm] = useState(false);
     const [editingReminder, setEditingReminder] =
@@ -76,6 +78,8 @@ export default function Reminders({
     // ========================================================
 
     const handleAddReminder = () => {
+        setError("");
+        setSuccess("");
         setEditingReminder(null);
         setShowForm(true);
     };
@@ -85,6 +89,8 @@ export default function Reminders({
     // ========================================================
 
     const handleEditReminder = (reminder) => {
+        setError("");
+        setSuccess("");
         setEditingReminder(reminder);
         setShowForm(true);
     };
@@ -207,10 +213,16 @@ export default function Reminders({
     // ========================================================
 
     const handleFormSaved = async () => {
+        const wasEditing = editingReminder !== null;
         setShowForm(false);
         setEditingReminder(null);
 
         await loadReminders();
+        setSuccess(
+            wasEditing
+                ? "Reminder updated successfully 🌸"
+                : "Reminder created successfully 🌸"
+        );
     };
 
     // ========================================================
@@ -221,6 +233,7 @@ export default function Reminders({
         return (
             <ReminderForm
                 reminder={editingReminder}
+                initialType={selectedSection}
                 onBack={() => {
                     setShowForm(false);
                     setEditingReminder(null);
@@ -300,6 +313,8 @@ export default function Reminders({
                 onDelete={handleDeleteReminder}
                 onToggle={handleToggleReminder}
                 onAdd={handleAddReminder}
+                errorMessage={error}
+                successMessage={success}
             />
         );
     }
@@ -355,6 +370,12 @@ export default function Reminders({
                 </div>
             )}
 
+
+            {success && (
+                <div className="reminder-success" role="status">
+                    {success}
+                </div>
+            )}
 
             {/* =================================================
                 QUICK CARE
@@ -455,7 +476,7 @@ export default function Reminders({
 
             <div className="reminder-list">
 
-                {enabledReminders.length === 0 ? (
+                {reminders.length === 0 ? (
 
                     <div className="empty-card">
 
@@ -487,7 +508,7 @@ export default function Reminders({
 
                 ) : (
 
-                    enabledReminders.map(
+                    reminders.map(
                         (reminder) => (
                             <Reminder
                                 key={reminder.id}
@@ -523,7 +544,7 @@ export default function Reminders({
             <section className="care-bottom-card">
 
                 <img
-                    src={careCat}
+                    src={monitoringCat}
                     alt="Koneko care"
                 />
 

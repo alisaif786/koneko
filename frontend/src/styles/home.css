@@ -1,0 +1,512 @@
+.greeting {
+  padding: 28px 20px 17px;
+}
+
+.greeting span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.greeting h1 {
+  margin: 4px 0 0;
+  color: var(--text);
+  font-family: "Quicksand", sans-serif;
+  font-size: 31px;
+}
+
+.home-screen {
+  padding-bottom: 20px;
+}
+
+.home-hero {
+  position: relative;
+  margin: 0 18px 17px;
+  padding: 13px 0 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 30px;
+  background: linear-gradient(
+          145deg,
+          #ffe9f1,
+          #eee7ff
+  );
+  box-shadow: var(--shadow);
+}
+
+.home-hero::after {
+  content: "\2661";
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  color: #d39ab2;
+  font-size: 12px;
+  line-height: 1;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.home-hero > span {
+  width: 100%;
+  padding: 0 18px;
+  display: block;
+  color: #b07f98;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.home-hero-banner {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 0;
+}
+
+.home-hero-content {
+  width: 100%;
+  padding: 0 18px;
+  text-align: center;
+}
+
+.home-hero-content h2 {
+  margin: 6px 0 3px;
+  color: #594252;
+  font-family: "Quicksand", sans-serif;
+  font-size: 17px;
+}
+
+.home-hero-content p {
+  margin: 0;
+  color: #806374;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.phase-home-card {
+  width: calc(100% - 36px);
+  margin: 0 18px 15px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #f0e1eb;
+  border-radius: 23px;
+  background: #fff;
+  box-shadow: var(--shadow);
+  text-align: left;
+  color: var(--text);
+}
+
+.phase-home-image {
+  width: 67px;
+  height: 67px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #fff0f5;
+}
+
+.phase-home-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.phase-home-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.phase-home-info h2 {
+  margin: 4px 0 2px;
+  font-family: "Quicksand", sans-serif;
+  font-size: 15px;
+}
+
+.phase-home-info p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.love-card {
+  margin: 0 18px 21px;
+  padding: 17px;
+  display: flex;
+  gap: 13px;
+  border: 1px solid #f7dce7;
+  border-radius: 22px;
+  background: #fff4f7;
+}
+
+.love-icon {
+  width: 39px;
+  height: 39px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 14px;
+  background: #fff;
+  font-size: 19px;
+}
+
+.love-card p {
+  margin: 5px 0 0;
+  color: #826f7c;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.quick-care-grid {
+  margin: 0 18px 22px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+}
+
+.quick-care-card {
+  min-width: 0;
+  padding: 11px;
+  display: grid;
+  grid-template-columns: 43px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #f1e6ed;
+  border-radius: 19px;
+  background: #fff;
+  box-shadow: 0 7px 20px rgba(100, 72, 96, 0.055);
+  text-align: left;
+}
+
+.quick-care-image {
+  width: 43px;
+  height: 43px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #fff0f5;
+}
+
+.quick-care-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.quick-care-card h3 {
+  margin: 0;
+  color: #594754;
+  font-family: "Quicksand", sans-serif;
+  font-size: 12px;
+}
+
+.quick-care-card p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.reminders-heading {
+  margin-top: 3px;
+}
+
+.home-reminders {
+  margin: 0 18px 20px;
+}
+
+.calendar-shortcut {
+  width: calc(100% - 36px);
+  margin: 0 18px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #eee4f2;
+  border-radius: 21px;
+  background: linear-gradient(
+          135deg,
+          #fff,
+          #f8f2ff
+  );
+  box-shadow: var(--shadow);
+  text-align: left;
+}
+
+.calendar-shortcut img {
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(100, 72, 96, 0.1);
+}
+
+.calendar-shortcut div {
+  flex: 1;
+  min-width: 0;
+}
+
+.calendar-shortcut h3 {
+  margin: 4px 0 2px;
+  font-family: "Quicksand", sans-serif;
+  font-size: 14px;
+}
+
+.calendar-shortcut p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.home-loading-card {
+  margin: 0 18px;
+  padding: 30px 20px;
+  overflow: hidden;
+  border-radius: 27px;
+  background: #fff;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.home-loading-card img {
+  width: calc(100% + 40px);
+  max-width: none;
+  height: auto;
+  margin: -30px -20px 14px;
+  display: block;
+  object-fit: contain;
+}
+
+.home-loading-card h2 {
+  margin: 7px 0 4px;
+  font-family: "Quicksand", sans-serif;
+  font-size: 19px;
+}
+
+.home-loading-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.home-prediction-card {
+  margin: 0 18px 14px;
+  padding: 15px;
+  border: 1px solid #efdfea;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #fff7fa, #f6f1ff);
+  box-shadow: var(--shadow);
+}
+
+.home-prediction-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-prediction-heading > span {
+  font-size: 18px;
+}
+
+.home-prediction-heading h2 {
+  margin: 0;
+  color: var(--text);
+  font-family: "Quicksand", sans-serif;
+  font-size: 15px;
+}
+
+.home-prediction-values {
+  margin-top: 11px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.home-prediction-value {
+  min-width: 0;
+  padding: 9px 10px;
+  display: grid;
+  gap: 3px;
+  border: 1px solid rgba(240, 225, 236, 0.9);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.home-prediction-value span {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.home-prediction-value strong {
+  color: #79566f;
+  font-family: "Quicksand", sans-serif;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.home-period-start-button {
+  width: calc(100% - 36px);
+  min-height: 46px;
+  margin: 0 18px 14px;
+  padding: 11px 14px;
+  border: 1px solid #eccddd;
+  border-radius: 17px;
+  background: linear-gradient(110deg, #ffeaf2, #f4edff);
+  box-shadow: 0 7px 18px rgba(156, 104, 139, 0.09);
+  color: #ae6688;
+  font-size: 12px;
+  font-weight: 700;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.home-period-start-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 9px 22px rgba(156, 104, 139, 0.14);
+}
+
+.home-period-start-button:active {
+  transform: scale(0.99);
+}
+
+.home-period-start-success {
+  margin: -3px 18px 14px;
+  padding: 10px 12px;
+  border: 1px solid #e0ebd9;
+  border-radius: 14px;
+  background: #f5faef;
+  color: #718a65;
+  font-size: 11px;
+  text-align: center;
+}
+
+.home-period-start-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  padding: 20px;
+  display: grid;
+  place-items: center;
+  background: rgba(73, 60, 72, 0.34);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: period-dialog-fade-in 160ms ease both;
+}
+
+.home-period-start-dialog {
+  width: min(100%, 360px);
+  padding: 23px 19px 18px;
+  border: 1px solid #f0e2eb;
+  border-radius: 25px;
+  background: linear-gradient(145deg, #fffafd, #fff3f8 62%, #f8f3ff);
+  box-shadow: 0 20px 55px rgba(81, 56, 76, 0.2);
+  text-align: center;
+  animation: period-dialog-rise-in 200ms ease both;
+}
+
+.home-period-start-icon {
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 9px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: #fff0f6;
+  font-size: 23px;
+}
+
+.home-period-start-dialog h2 {
+  margin: 0 0 6px;
+  color: var(--text);
+  font-family: "Quicksand", sans-serif;
+  font-size: 17px;
+}
+
+.home-period-start-dialog > p {
+  margin: 0;
+  color: #897888;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.home-period-start-dialog .home-period-start-error {
+  margin-top: 11px;
+  padding: 9px 10px;
+  border-radius: 12px;
+  background: #fff0f3;
+  color: #b65f78;
+}
+
+.home-period-start-actions {
+  margin-top: 17px;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 8px;
+}
+
+.home-period-start-actions button {
+  min-height: 40px;
+  padding: 8px 10px;
+  border-radius: 13px;
+  font-size: 10px;
+  font-weight: 700;
+  transition: transform 150ms ease, opacity 150ms ease;
+}
+
+.home-period-start-actions button:active {
+  transform: scale(0.98);
+}
+
+.home-period-start-actions button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.home-period-cancel {
+  border: 1px solid #eee2eb;
+  background: #fff;
+  color: #927d8c;
+}
+
+.home-period-confirm {
+  border: 1px solid #d990b0;
+  background: #dc9bb8;
+  color: #fff;
+}
+
+@keyframes period-dialog-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes period-dialog-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(7px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-period-start-button,
+  .home-period-start-actions button {
+    transition: none;
+  }
+
+  .home-period-start-overlay,
+  .home-period-start-dialog {
+    animation: none;
+  }
+}
+
+@media (max-width: 370px) {
+  .quick-care-grid {
+    grid-template-columns: 1fr;
+  }
+
+}

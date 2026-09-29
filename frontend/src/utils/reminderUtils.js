@@ -18,8 +18,23 @@ export function formatFrequency(reminder) {
     }
 
     if (reminder.frequency === "WEEKLY") {
-        return `Every ${reminder.dayOfWeek || "week"}`;
+        const day = reminder.dayOfWeek
+            ? reminder.dayOfWeek.charAt(0) + reminder.dayOfWeek.slice(1).toLowerCase()
+            : "week";
+
+        return `Every ${day}`;
     }
 
     return reminder.frequency || "";
+}
+
+export function formatReminderType(type) {
+    const labels = {
+        WATER: "Water",
+        FOOD: "Food",
+        MEDICINE: "Medicine",
+        SLEEP: "Sleep",
+    };
+
+    return labels[type] || type || "Reminder";
 }
